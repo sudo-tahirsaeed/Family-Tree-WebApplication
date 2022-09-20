@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <title>Login/Signup</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <meta http-equiv="Content-Security-Policy" content="font-src 'self' data:; img-src 'self' data:; default-src 'self' http://121.0.0:3000/">
+
+    
+    <link href="img/family-tree.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'>
+    <link rel="stylesheet" href="css/famStyles.css">
+    <script src="js/signInJavascript.js"></script>
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+    <!-- <script type="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+   
+</head>
+
+<body>
+
+    <h2>Family Tree Management</h2>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form name= "form" action="/su" method="POST">
+                <h1>Create Account</h1>
+                <br>
+               <!--  <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div> -->
+              <!--   <span>or use your email for registration</span> -->
+                <input type="text" name="names" placeholder="Name" required />
+            
+                
+                <input type="email" name ="emails" placeholder="Email" required />
+                <input type="password" name ="passwords" placeholder="Password" required />
+               
+              
+                <br>
+                <button onclick="best()">Sign Up</button>
+            </form>
+        </div>
+  
+        <div class="form-container sign-in-container">
+            <form name ="form" action="/log" method="POST">
+                <h1>Sign in</h1>
+                <br>
+                <input type="email" name="emaill" placeholder="Email"  />
+                <input type="password" name="passwordl" placeholder="Password"  />
+                <br>
+              
+                <button > Sign In</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Hey there!</h1>
+                    <p>Enter your personal details to sign up and become a member. If you're already one, click on sign in button to login.</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Welcome!</h1>
+                    <p>Enter your login details if you're already a member. If not, click on sign up button to become a member.</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- partial -->
+    <script src="js/script.js"></script>
+
+    <script src="js/fgen.js"></script>
+    
+  
+</body>
+
+
+</html>

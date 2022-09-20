@@ -1,0 +1,1693 @@
+//MONGO DB AUTH 
+
+const {MongoClient} = require('mongodb')
+const url= 'mongodb://localhost:27017';
+const databaseName='auth'
+const client= new MongoClient(url);
+var lemail="";
+var lpass="";
+var x=0,msu=0;
+async function getData()
+{
+    let result = await client.connect();
+    db= result.db(databaseName);
+    collection = db.collection('login');
+
+	
+	var query = { email: lemail };
+	db.collection("login").find(query).toArray(function(err, resultx) {
+		if (err) throw err;
+		if(resultx.length===0){
+			x=0;
+		}
+		else{
+		if(resultx[0].password===lpass)
+		{
+			console.log("Auth Sucess Mongo ");
+			x=1;
+		}
+		else{
+			console.log("No record in Mongo");
+			x=0;
+			
+		}
+	}
+		
+	  });
+	  
+}
+
+async function storeData(ns,es,ps,is)
+{
+    let result = await client.connect();
+    db= result.db(databaseName);
+    collection = db.collection('login');
+  
+	var query = { email: es };
+	db.collection("login").find(query).toArray(function(err, resultx) {
+		if (err) throw err;
+		if(resultx.length===0)
+		{
+			db.collection("login").insertOne({name: ns,email: es,password: ps,fid: is});
+			msu=1;
+		}
+		else
+		{
+			
+			
+			  console.log("USER ALREADY EXIST");
+		}
+		
+	  });
+	
+
+	  
+	 
+}
+
+
+
+const express = require('express');
+
+const app = express();
+const port = 5000;
+
+app.use(express.static('public'));
+
+app.use(express.urlencoded());
+app.use('/css', express.static(__dirname + 'public/css'))
+app.use('/js', express.static(__dirname + 'public/js'))
+app.set('views', './views');
+app.set('view engine', 'ejs');
+
+
+app.get('', (req, res) => {
+	res.render('fam', { text: 'Hey' })
+})
+
+// app.get('', function(request, response, next){
+
+// 	response.render('views/fam.ejs');
+
+
+// });
+
+// app.post('/', function(request, response, next){
+
+
+// 	//response.send(request.body);
+
+
+// });
+
+const bodyParser = require('body-parser');
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.post('/searched', (req, res) => {
+var name=req.body.famid;
+
+var found=0;
+var fs = require('fs')
+  , filename = name;
+fs.readFile('public/gedcoms/'+name+'.gedcom', 'utf8', function(err, data) {
+  if (err) {
+	console.log("File Not Found!");
+	app.get('/responsesearch',(reqs,ress)=>{
+	ress.status(200).json({'Message': 'No Record Found'
+  })})
+
+  }
+  else{
+	
+	var c=gedcomtojson(name)
+	delay(500).then(() => {	
+		res.render('viewingfamilytree', { text: 'Hey' })
+	
+	})
+	
+
+  }
+ 
+});
+})
+
+app.post('/su', (req, res) => {
+	//   //res.send(`Full name is:${req.body.fname} ,Last name : ${req.body.fname}.`);
+	
+	const fs = require('fs');
+	storeData(req.body.names,req.body.emails,req.body.passwords,req.body.idnos);
+	delay(1500).then(() => {	
+if(msu===1)
+{
+	fs.appendFile('auth.txt', req.body.names+"\n"+req.body.emails+"\n"+req.body.passwords+"\n"+req.body.idnos+"\nxx\n", function (err) {
+		
+		if (err) throw err;
+		console.log('Registeration Sucessfull!');
+	});
+	msu=0;
+		res.render('regsucess', { text: 'Hey' })
+}
+else
+{
+	res.render('already', { text: 'Hey' })
+}
+	})
+	
+	
+
+})
+
+var f=0,got=0,auth=0;
+var data = [];
+var geddata=[];
+var grandfather='Empty',father='Empty' ,me='Empty' ,me1='Empty' ,me2='Empty' ,me3='Empty' ,b1 ='Empty',b1k1 ='Empty',b1k2 ='Empty',b1k3 ='Empty',b2 ='Empty',b2k1 ='Empty',b2k2 ='Empty',b2k3 ='Empty',b3 ='Empty',b3k1 ='Empty',b3k2 ='Empty',b3k3 ='Empty',lal ='Empty',lalk1 ='Empty',lalk1c1 ='Empty',lalk1c2 ='Empty',lalk1c3 ='Empty',lalk2 ='Empty',lalk2c1 ='Empty',lalk2c2 ='Empty',lalk2c3 ='Empty',lalk3 ='Empty',lalk3c1 ='Empty',lalk3c2 ='Empty',lalk3c3 ='Empty',mirdad ='Empty',mirk1 ='Empty',filenamef='Empty',mirk1c1 ='Empty',mirk1c2 ='Empty',mirk1c3 ='Empty',mirk2 ='Empty',mirk2c1 ='Empty',mirk2c2 ='Empty',mirk2c3 ='Empty',mirk3 ='Empty',mirk3c1 ='Empty',mirk3c2 ='Empty',grandmother='Empty',mirk3c3='Empty',yo ='Empty',yok1 ='Empty',yok1c1 ='Empty',yok1c2 ='Empty',yok1c3 ='Empty',yok2 ='Empty',yok2c1 ='Empty',yok2c2 ='Empty',yok2c3 ='Empty',yok3 ='Empty',yok3c1 ='Empty',yok3c2 ='Empty',yok3c3 ='Empty',na ='Empty',nak1 ='Empty',nak1c1 ='Empty',nak1c2 ='Empty',nak1c3 ='Empty',nak2 ='Empty',nak2c1 ='Empty',nak2c2 ='Empty',nak2c3 ='Empty',nak3 ='Empty',nak3c1 ='Empty',nak3c2 ='Empty',nak3c3 ='Empty',grandfatherd='Empty',fatherd='Empty' ,med='Empty' ,me1d='Empty' ,me2d='Empty' ,me3d='Empty' ,b1d='Empty',b1k1d='Empty',b1k2d='Empty',b1k3d='Empty',b2d='Empty',b2k1d='Empty',b2k2d='Empty',b2k3d='Empty',b3d='Empty',b3k1d='Empty',b3k2d='Empty',b3k3d='Empty',lald='Empty',lalk1d='Empty',lalk1c1d='Empty',lalk1c2d='Empty',lalk1c3d='Empty',lalk2d='Empty',lalk2c1d='Empty',lalk2c2d='Empty',lalk2c3d='Empty',lalk3d='Empty',lalk3c1d='Empty',lalk3c2d='Empty',lalk3c3d='Empty',mirdadd='Empty',mirk1d='Empty',mirk1c1d='Empty',mirk1c2d='Empty',mirk1c3d='Empty',mirk2d='Empty',mirk2c1d='Empty',mirk2c2d='Empty',mirk2c3d='Empty',mirk3d='Empty',mirk3c1d='Empty',mirk3c2d='Empty',grandmotherd='Empty',mirk3c3d='Empty',yod='Empty',yok1d='Empty',yok1c1d='Empty',yok1c2d='Empty',yok1c3d='Empty',yok2d='Empty',yok2c1d='Empty',yok2c2d='Empty',yok2c3d='Empty',yok3d='Empty',yok3c1d='Empty',yok3c2d='Empty',yok3c3d='Empty',nad='Empty',nak1d='Empty',nak1c1d='Empty',nak1c2d='Empty',nak1c3d='Empty',nak2d='Empty',nak2c1d='Empty',nak2c2d='Empty',nak2c3d='Empty',nak3d='Empty',nak3c1d='Empty',nak3c2d='Empty',nak3c3d='Empty',motherd ='Empty',aunt1d ='Empty',aunt2d ='Empty',aunt3d ='Empty',aunt4d ='Empty',fathers='Empty' ,mes='Empty' ,me1s='Empty' ,me2s='Empty' ,me3s='Empty' ,b1s='Empty',b1k1s='Empty',b1k2s='Empty',b1k3s='Empty',b2s='Empty',b2k1s='Empty',b2k2s='Empty',b2k3s='Empty',b3s='Empty',b3k1s='Empty',b3k2s='Empty',b3k3s='Empty',lals='Empty',lalk1s='Empty',lalk1c1s='Empty',lalk1c2s='Empty',lalk1c3s='Empty',lalk2s='Empty',lalk2c1s='Empty',lalk2c2s='Empty',lalk2c3s='Empty',lalk3s='Empty',lalk3c1s='Empty',lalk3c2s='Empty',lalk3c3s='Empty',mirdads='Empty',mirk1s='Empty',mirk1c1s='Empty',mirk1c2s='Empty',mirk1c3s='Empty',mirk2s='Empty',mirk2c1s='Empty',mirk2c2s='Empty',mirk2c3s='Empty',mirk3s='Empty',mirk3c1s='Empty',mirk3c2s='Empty',grandmothers='Empty',mirk3c3s='Empty',yos='Empty',yok1s='Empty',yok1c1s='Empty',yok1c2s='Empty',yok1c3s='Empty',yok2s='Empty',yok2c1s='Empty',yok2c2s='Empty',yok2c3s='Empty',yok3s='Empty',yok3c1s='Empty',yok3c2s='Empty',yok3c3s='Empty',nas='Empty',nak1s='Empty',nak1c1s='Empty',nak1c2s='Empty',nak1c3s='Empty',nak2s='Empty',nak2c1s='Empty',nak2c2s='Empty',nak2c3s='Empty',nak3s='Empty',nak3c1s='Empty',nak3c2s='Empty',nak3c3s='Empty',mothers='Empty',aunt1s='Empty',aunt2s='Empty',aunt3s='Empty',aunt4s='Empty',mother ='Empty',aunt1 ='Empty',aunt2 ='Empty',aunt3 ='Empty',aunt4 ='Empty';
+var id='';
+app.post('/newtree', (req, res) => {
+	const fs = require('fs');
+	if(false)
+	{
+
+	}
+		
+	
+	else{
+  
+
+
+	fs.appendFile('public/gedcoms/'+req.body.fid+'.gedcom', 
+	"0\n"+req.body.gf+"\n"+
+	"0d\n"+req.body.gfd+"\n"+
+	
+	"00\n"+req.body.gm+"\n"+
+	"00d\n"+req.body.gmd+"\n"+
+	
+
+	"01\n"+req.body.father+"\n"+
+	"01d\n"+req.body.fatherd+"\n"+
+	
+	"001\n"+req.body.mother+"\n"+
+	"001d\n"+req.body.motherd+"\n"+
+	
+
+	"011\n"+req.body.me+"\n"+
+	"011d\n"+req.body.med+"\n"+
+	"011s\n"+req.body.mes+"\n"+
+	
+	"0111\n"+req.body.mek1+"\n"+
+	"0111d\n"+req.body.mek1d+"\n"+
+	"0111s\n"+req.body.mek1s+"\n"+
+
+	"0112\n"+req.body.mek2+"\n"+
+	"0112d\n"+req.body.mek2d+"\n"+
+	"0112s\n"+req.body.mek2s+"\n"+
+
+	"0113\n"+req.body.mek3+"\n"+
+	"0113d\n"+req.body.mek3d+"\n"+
+	"0113s\n"+req.body.mek3s+"\n"+
+	
+	
+	"012\n"+req.body.b1+"\n"+
+	"012d\n"+req.body.b1d+"\n"+
+	"012s\n"+req.body.b1s+"\n"+
+	
+	"0121\n"+req.body.b1k1+"\n"+
+	"0121d\n"+req.body.b1k1d+"\n"+
+	"0121s\n"+req.body.b1k1s+"\n"+
+	
+	"0122\n"+req.body.b1k2+"\n"+
+	"0122d\n"+req.body.b1k2d+"\n"+
+	"0122s\n"+req.body.b1k2s+"\n"+
+	
+	"0123\n"+req.body.b1k3+"\n"+
+	"0123d\n"+req.body.b1k3d+"\n"+
+	"0123s\n"+req.body.b1k3s+"\n"+
+	
+
+	"013\n"+req.body.b2+"\n"+
+	"013d\n"+req.body.b2d+"\n"+
+	"013s\n"+req.body.b2s+"\n"+
+
+
+	"0131\n"+req.body.b2k1+"\n"+
+	"0131d\n"+req.body.b2k1d+"\n"+
+	"0131s\n"+req.body.b2k1s+"\n"+
+	
+	"0132\n"+req.body.b2k2+"\n"+
+	"0132d\n"+req.body.b2k2d+"\n"+
+	"0132s\n"+req.body.b2k2s+"\n"+
+	
+	"0133\n"+req.body.b2k3+"\n"+
+	"0133d\n"+req.body.b2k3d+"\n"+
+	"0133s\n"+req.body.b2k3s+"\n"+
+	
+
+
+
+
+	"02d\n"+req.body.lald+"\n"+
+	
+	"002d\n"+req.body.aunt1d+"\n"+
+	
+	"021d\n"+req.body.lalk1d+"\n"+
+	"0211d\n"+req.body.lalk1c1d+"\n"+
+	"0212d\n"+req.body.lalk1c2d+"\n"+
+	"0213d\n"+req.body.lalk1c3d+"\n"+
+	
+	"022d\n"+req.body.lalk2d+"\n"+
+	
+	"0221d\n"+req.body.lalk2c1d+"\n"+
+	"0222d\n"+req.body.lalk2c2d+"\n"+
+	"0223d\n"+req.body.lalk2c3d+"\n"+
+	
+	
+	"023d\n"+req.body.lalk3d+"\n"+
+	
+	"0231d\n"+req.body.lalk3c1d+"\n"+
+	"0232d\n"+req.body.lalk3c2d+"\n"+
+	"0233d\n"+req.body.lalk3c3d+"\n"+
+
+	"02s\n"+req.body.lals+"\n"+
+	
+	"002s\n"+req.body.aunt1s+"\n"+
+	
+	"021s\n"+req.body.lalk1s+"\n"+
+	"0211s\n"+req.body.lalk1c1s+"\n"+
+	"0212s\n"+req.body.lalk1c2s+"\n"+
+	"0213s\n"+req.body.lalk1c3s+"\n"+
+	
+	"022s\n"+req.body.lalk2s+"\n"+
+	
+	"0221s\n"+req.body.lalk2c1s+"\n"+
+	"0222s\n"+req.body.lalk2c2s+"\n"+
+	"0223s\n"+req.body.lalk2c3s+"\n"+
+	
+	
+	"023s\n"+req.body.lalk3s+"\n"+
+	
+	"0231s\n"+req.body.lalk3c1s+"\n"+
+	"0232s\n"+req.body.lalk3c2s+"\n"+
+	"0233s\n"+req.body.lalk3c3s+"\n"+
+
+	"02\n"+req.body.lal+"\n"+
+
+	"002\n"+req.body.aunt1+"\n"+
+	
+	"021\n"+req.body.lalk1+"\n"+
+	"0211\n"+req.body.lalk1c1+"\n"+
+	"0212\n"+req.body.lalk1c2+"\n"+
+	"0213\n"+req.body.lalk1c3+"\n"+
+	
+	"022\n"+req.body.lalk2+"\n"+
+	
+	"0221\n"+req.body.lalk2c1+"\n"+
+	"0222\n"+req.body.lalk2c2+"\n"+
+	"0223\n"+req.body.lalk2c3+"\n"+
+	
+	
+	"023\n"+req.body.lalk3+"\n"+
+	
+	"0231\n"+req.body.lalk3c1+"\n"+
+	"0232\n"+req.body.lalk3c2+"\n"+
+	"0233\n"+req.body.lalk3c3+"\n"+
+	// uncle 3
+
+
+	
+	"03d\n"+req.body.mirdadd+"\n"+
+	
+	"003d\n"+req.body.aunt2d+"\n"+
+	
+	"031d\n"+req.body.mirk1d+"\n"+
+	"0311d\n"+req.body.mirk1c1d+"\n"+
+	"0312d\n"+req.body.mirk1c2d+"\n"+
+	"0313d\n"+req.body.mirk1c3d+"\n"+
+	
+	"032d\n"+req.body.mirk2d+"\n"+
+	
+	"0321d\n"+req.body.mirk2c1d+"\n"+
+	"0322d\n"+req.body.mirk2c2d+"\n"+
+	"0323d\n"+req.body.mirk2c3d+"\n"+
+	
+	
+	"033d\n"+req.body.mirk3d+"\n"+
+	
+	"0331d\n"+req.body.mirk3c1d+"\n"+
+	"0332d\n"+req.body.mirk3c2d+"\n"+
+	"0333d\n"+req.body.mirk3c3d+"\n"+
+
+	"03s\n"+req.body.mirs+"\n"+
+	
+	"003s\n"+req.body.aunt1s+"\n"+
+	
+	"031s\n"+req.body.mirk1s+"\n"+
+	"0311s\n"+req.body.mirk1c1s+"\n"+
+	"0312s\n"+req.body.mirk1c2s+"\n"+
+	"0313s\n"+req.body.mirk1c3s+"\n"+
+	
+	"032s\n"+req.body.mirk2s+"\n"+
+	
+	"0321s\n"+req.body.mirk2c1s+"\n"+
+	"0322s\n"+req.body.mirk2c2s+"\n"+
+	"0323s\n"+req.body.mirk2c3s+"\n"+
+	
+	
+	"033s\n"+req.body.mirk3s+"\n"+
+	
+	"0331s\n"+req.body.mirk3c1s+"\n"+
+	"0332s\n"+req.body.mirk3c2s+"\n"+
+	"0333s\n"+req.body.mirk3c3s+"\n"+
+
+
+	"03\n"+req.body.mirdad+"\n"+
+	"003\n"+req.body.aunt2+"\n"+
+	
+	"031\n"+req.body.mirk1+"\n"+
+	"0311\n"+req.body.mirk1c1+"\n"+
+	"0312\n"+req.body.mirk1c2+"\n"+
+	"0313\n"+req.body.mirk1c3+"\n"+
+	
+	"032\n"+req.body.mirk2+"\n"+
+	
+	"0321\n"+req.body.mirk2c1+"\n"+
+	"0322\n"+req.body.mirk2c2+"\n"+
+	"0323\n"+req.body.mirk2c3+"\n"+
+	
+	
+	"033\n"+req.body.mirk3+"\n"+
+	
+	"0331\n"+req.body.mirk3c1+"\n"+
+	"0332\n"+req.body.mirk3c2+"\n"+
+	"0333\n"+req.body.mirk3c3+"\n"+
+// uncle yo
+
+
+"04d\n"+req.body.yod+"\n"+
+	
+"004d\n"+req.body.aunt3d+"\n"+
+
+"041d\n"+req.body.yok1d+"\n"+
+"0411d\n"+req.body.yok1c1d+"\n"+
+"0412d\n"+req.body.yok1c2d+"\n"+
+"0413d\n"+req.body.yok1c3d+"\n"+
+
+"042d\n"+req.body.yok2d+"\n"+
+
+"0421d\n"+req.body.yok2c1d+"\n"+
+"0422d\n"+req.body.yok2c2d+"\n"+
+"0423d\n"+req.body.yok2c3d+"\n"+
+
+
+"043d\n"+req.body.yok3d+"\n"+
+
+"0431d\n"+req.body.yok3c1d+"\n"+
+"0432d\n"+req.body.yok3c2d+"\n"+
+"0433d\n"+req.body.yok3c3d+"\n"+
+
+"04s\n"+req.body.yos+"\n"+
+
+"004s\n"+req.body.aunt1s+"\n"+
+
+"041s\n"+req.body.yok1s+"\n"+
+"0411s\n"+req.body.yok1c1s+"\n"+
+"0412s\n"+req.body.yok1c2s+"\n"+
+"0413s\n"+req.body.yok1c3s+"\n"+
+
+"042s\n"+req.body.yok2s+"\n"+
+
+"0421s\n"+req.body.yok2c1s+"\n"+
+"0422s\n"+req.body.yok2c2s+"\n"+
+"0423s\n"+req.body.yok2c3s+"\n"+
+
+
+"043s\n"+req.body.yok3s+"\n"+
+
+"0431s\n"+req.body.yok3c1s+"\n"+
+"0432s\n"+req.body.yok3c2s+"\n"+
+"0433s\n"+req.body.yok3c3s+"\n"+
+
+
+	"04\n"+req.body.yo+"\n"+
+	"004\n"+req.body.aunt3+"\n"+
+	
+	"041\n"+req.body.yok1+"\n"+
+	"0411\n"+req.body.yok1c1+"\n"+
+	"0412\n"+req.body.yok1c2+"\n"+
+	"0413\n"+req.body.yok1c3+"\n"+
+	
+	"042\n"+req.body.yok2+"\n"+
+	
+	"0421\n"+req.body.yok2c1+"\n"+
+	"0422\n"+req.body.yok2c2+"\n"+
+	"0423\n"+req.body.yok2c3+"\n"+
+	
+	
+	"043\n"+req.body.yok3+"\n"+
+	
+	"0431\n"+req.body.yok3c1+"\n"+
+	"0432\n"+req.body.yok3c2+"\n"+
+	"0433\n"+req.body.yok3c3+"\n"+
+// uncle na
+
+"05d\n"+req.body.nad+"\n"+
+	
+"005d\n"+req.body.aunt4d+"\n"+
+
+"051d\n"+req.body.nak1d+"\n"+
+"0511d\n"+req.body.nak1c1d+"\n"+
+"0512d\n"+req.body.nak1c2d+"\n"+
+"0513d\n"+req.body.nak1c3d+"\n"+
+
+"052d\n"+req.body.nak2d+"\n"+
+
+"0521d\n"+req.body.nak2c1d+"\n"+
+"0522d\n"+req.body.nak2c2d+"\n"+
+"0523d\n"+req.body.nak2c3d+"\n"+
+
+
+"053d\n"+req.body.nak3d+"\n"+
+
+"0531d\n"+req.body.nak3c1d+"\n"+
+"0532d\n"+req.body.nak3c2d+"\n"+
+"0533d\n"+req.body.nak3c3d+"\n"+
+
+"05s\n"+req.body.nas+"\n"+
+
+"005s\n"+req.body.aunt1s+"\n"+
+
+"051s\n"+req.body.nak1s+"\n"+
+"0511s\n"+req.body.nak1c1s+"\n"+
+"0512s\n"+req.body.nak1c2s+"\n"+
+"0513s\n"+req.body.nak1c3s+"\n"+
+
+"052s\n"+req.body.nak2s+"\n"+
+
+"0521s\n"+req.body.nak2c1s+"\n"+
+"0522s\n"+req.body.nak2c2s+"\n"+
+"0523s\n"+req.body.nak2c3s+"\n"+
+
+
+"053s\n"+req.body.nak3s+"\n"+
+
+"0531s\n"+req.body.nak3c1s+"\n"+
+"0532s\n"+req.body.nak3c2s+"\n"+
+"0533s\n"+req.body.nak3c3s+"\n"+
+
+
+	"05\n"+req.body.na+"\n"+
+	"005\n"+req.body.aunt4+"\n"+
+	
+"051\n"+req.body.nak1+"\n"+
+"0511\n"+req.body.nak1c1+"\n"+
+"0512\n"+req.body.nak1c2+"\n"+
+"0513\n"+req.body.nak1c3+"\n"+
+
+"052\n"+req.body.nak2+"\n"+
+
+"0521\n"+req.body.nak2c1+"\n"+
+"0522\n"+req.body.nak2c2+"\n"+
+"0523\n"+req.body.nak2c3+"\n"+
+
+
+"053\n"+req.body.nak3+"\n"+
+
+"0531\n"+req.body.nak3c1+"\n"+
+"0532\n"+req.body.nak3c2+"\n"+
+"0533\n"+req.body.nak3c3+"\n"
+	
+
+	, 
+	
+	
+	
+	
+	function (err) {
+		app.get('/famsuc',(req,res)=>{
+			res.status(200).json({'info': 'ok',
+									'message': "Family Tree Has Been Added Sucessfully! Login Back to View Updates"})
+				})
+		
+		if (err) throw err;
+		console.log('New Family Addded Sucessfully');
+		app.get('/famsuc',(req,res)=>{
+			res.status(200).json({'info': 'ok',
+									'message': "Family Tree Has Been Added Sucessfully! Login Back to View Updates"})
+				})
+				delay(2000).then(() => {	
+				res.render('fam', { email: data[got] });
+				});
+	});
+	
+
+}
+});
+
+app.post('/searched', (req, res) => {
+	res.render('search', { name: 'failed' });
+	})
+app.post('/rendersearch', (req, res) => {
+res.render('search', { name: 'failed' });
+})
+app.get('/download',(reqs,ress)=>{
+	
+	var fs = require('fs')
+	, filename = id;
+  fs.readFile('public/gedcoms/'+id+'.gedcom', 'utf8', function(err, data) {
+	if (err) {
+	  console.log("File Not Found!");
+	  
+  
+	}
+	else{
+		
+			ress.download('public/gedcoms/'+id+'.gedcom')
+			
+		  
+	}})
+
+
+
+	
+
+
+})
+app.post('/updatetree', (req, res) => {
+	
+		
+		
+		var fs = require('fs')
+		  , filename = id;
+		fs.readFile('public/gedcoms/'+id+'.gedcom', 'utf8', function(err, data) {
+		  if (err) {
+			console.log("File Not Found!");
+			app.get('/updatefilecheck',(req,res)=>{
+				res.status(200).json({'Message': 'Cant Update!!! No Family Tree Found!'
+			  })})
+		
+		  }
+		  else{
+			
+			gedcomtojson(id)
+			delay(1000).then(() => {	
+				app.get('/updatefilecheck',(reqs,ress)=>{
+					ress.status(200).json({'Message': 'Data Updated Successfully! Login Again To check Updates'
+				  })})
+				res.render('update', { text: 'Hey' })
+			
+			})
+			
+		
+		  }
+		 
+		});
+		})
+
+	
+	
+	app.post('/createtree', (req, res) => {
+		
+		res.render('newfamilytree', { name: 'failed' });
+		})
+
+			
+app.post('/log', (req, res) => {
+	var lineReader = require('readline').createInterface({
+		input: require('fs').createReadStream('auth.txt')
+	  });
+
+	  	lemail=req.body.emaill;
+		lpass=req.body.passwordl;
+		getData();
+		
+	  lineReader.on('line', function (line) {
+		
+		
+
+		if(line===req.body.emaill)
+		{
+		
+			got=f;
+
+		}
+		
+		data.push(line);
+		f=f+1;
+
+	  })
+	  //setTimeout(() => {console.log("This is the first function")}, 2000);
+	  
+	  var iterator = data.values();
+	  
+	
+
+	
+	 delay(1000).then(() => {
+
+		if(got==0){
+			res.render('loginfailed', { email: data[got] });
+			}
+				
+				else{
+	// console.log("Email IS: "+data[got]+"\nPASSWORD IS: "+data[got+1]+"\nName IS: "+data[got-1]+"\nID IS: "+data[got+2]);
+	if(x===1)
+	{
+		
+		id=data[got+2];
+		
+		auth=1;
+		x=0;
+		res.render('dashboard', { email: data[got] });
+		
+		auth=0;		
+	}
+	else{
+	
+		console.log("AUTH FAILED!");
+	
+		res.render('loginfailed', { name: 'failed' });
+		// res.json({ name: "example" });
+		//res.render('fam', { name: 'failed' })
+		
+	}
+}
+
+	
+	
+	});
+	app.get('/newfamily1',(req,res)=>{
+		res.status(200).json({'info': data[got],
+								'name': data[got-1],
+								'id': data[got+2]
+							})
+							
+			})
+			app.get('/ix',(req,res)=>{
+				res.status(200).json({
+										'id': data[got+2]
+									})
+					})
+	
+})
+
+function gedcomtojson(filename){
+	 filenamef=filename;
+	var lineReader2 = require('readline').createInterface({
+		input: require('fs').createReadStream('public/gedcoms/'+filename+'.gedcom')
+		
+	  });
+	
+	
+	  lineReader2.on('line', function (line) {
+      geddata.push(line);
+	  
+
+	})
+	found=1;
+	delay(1000).then(() => {
+	for (var i = 0; i < geddata.length; i++) {
+	
+		if(geddata[i]=== '0')
+		grandfather=geddata[i+1];
+		if(geddata[i]=== '00')
+		grandmother=geddata[i+1];
+		else if(geddata[i]==='01')
+		father=geddata[i+1];
+
+
+		else if(geddata[i]==='001')
+		mother=geddata[i+1];
+		else if(geddata[i]==='002')
+		aunt1=geddata[i+1];
+		else if(geddata[i]==='003')
+		aunt2=geddata[i+1];
+		else if(geddata[i]==='004')
+		aunt3=geddata[i+1];
+		else if(geddata[i]==='005')
+		aunt4=geddata[i+1];
+		
+
+
+		else if(geddata[i]==='011')
+		me=geddata[i+1];
+		else if(geddata[i]==='0111')
+		me1=geddata[i+1];
+		else if(geddata[i]==='0112')
+		me2=geddata[i+1];
+		else if(geddata[i]==='0113')
+		me3=geddata[i+1];
+
+
+	else if(geddata[i]==='012')
+		b1=geddata[i+1];
+		else if(geddata[i]==='0121')
+		b1k1=geddata[i+1];
+		else if(geddata[i]==='0122')
+		b1k2=geddata[i+1];
+		else if(geddata[i]==='0123')
+		b1k3=geddata[i+1];
+
+		
+	else if(geddata[i]==='013')
+	b2=geddata[i+1];
+	else if(geddata[i]==='0131')
+	b2k1=geddata[i+1];
+	else if(geddata[i]==='0132')
+	b2k2=geddata[i+1];
+	else if(geddata[i]==='0133')
+	b2k3=geddata[i+1];
+
+
+
+			else if(geddata[i]==='01')
+		father=geddata[i+1];
+		
+		else if(geddata[i]==='011')
+		me=geddata[i+1];
+		else if(geddata[i]==='0111')
+		me1=geddata[i+1];
+		else if(geddata[i]==='0112')
+		me2=geddata[i+1];
+		else if(geddata[i]==='0113')
+		me3=geddata[i+1];
+
+
+	else if(geddata[i]==='012')
+		b1=geddata[i+1];
+		else if(geddata[i]==='0121')
+		b1k1=geddata[i+1];
+		else if(geddata[i]==='0122')
+		b1k2=geddata[i+1];
+		else if(geddata[i]==='0123')
+		b1k3=geddata[i+1];
+
+		
+	else if(geddata[i]==='013')
+	b2=geddata[i+1];
+	else if(geddata[i]==='0131')
+	b2k1=geddata[i+1];
+	else if(geddata[i]==='0132')
+	b2k2=geddata[i+1];
+	else if(geddata[i]==='0133')
+	b2k3=geddata[i+1];
+
+
+
+//uncle 1 
+
+
+
+
+	else if(geddata[i]==='02')
+	lal=geddata[i+1];
+	
+	else if(geddata[i]==='021')
+	lalk1=geddata[i+1];
+	else if(geddata[i]==='0211')
+	lalk1c1=geddata[i+1];
+	else if(geddata[i]==='0212')
+	lalk1c2=geddata[i+1];
+	else if(geddata[i]==='0213')
+	lalk1c3=geddata[i+1];
+
+
+	else if(geddata[i]==='022')
+	lalk2=geddata[i+1];
+	else if(geddata[i]==='0221')
+	lalk2c1=geddata[i+1];
+	else if(geddata[i]==='0222')
+	lalk2c2=geddata[i+1];
+	else if(geddata[i]==='0223')
+	lalk2c3=geddata[i+1];
+
+
+	
+	else if(geddata[i]==='023')
+	lalk3=geddata[i+1];
+	else if(geddata[i]==='0231')
+	lalk3c1=geddata[i+1];
+	else if(geddata[i]==='0232')
+	lalk3c2=geddata[i+1];
+	else if(geddata[i]==='0233')
+	lalk3c3=geddata[i+1];
+
+
+	//uncle 2
+
+
+	else if(geddata[i]==='03')
+	mirdad=geddata[i+1];
+	
+	else if(geddata[i]==='031')
+	mirk1=geddata[i+1];
+	else if(geddata[i]==='0311')
+	mirk1c1=geddata[i+1];
+	else if(geddata[i]==='0312')
+	mirk1c2=geddata[i+1];
+	else if(geddata[i]==='0313')
+	mirk1c3=geddata[i+1];
+
+
+	else if(geddata[i]==='032')
+	mirk2=geddata[i+1];
+	else if(geddata[i]==='0321')
+	mirk2c1=geddata[i+1];
+	else if(geddata[i]==='0322')
+	mirk2c2=geddata[i+1];
+	else if(geddata[i]==='0323')
+	mirk2c3=geddata[i+1];
+	
+
+
+	
+	else if(geddata[i]==='033')
+	mirk3=geddata[i+1];
+	else if(geddata[i]==='0331')
+	mirk3c1=geddata[i+1];
+	else if(geddata[i]==='0332')
+	mirk3c2=geddata[i+1];
+	else if(geddata[i]==='0333')
+	mirk3c3=geddata[i+1];
+
+
+	// uncle yo
+
+
+	else if(geddata[i]==='04')
+	yo=geddata[i+1];
+	
+	else if(geddata[i]==='041')
+	yok1=geddata[i+1];
+	else if(geddata[i]==='0411')
+	yok1c1=geddata[i+1];
+	else if(geddata[i]==='0412')
+	yok1c2=geddata[i+1];
+	else if(geddata[i]==='0413')
+	yok1c3=geddata[i+1];
+
+
+	else if(geddata[i]==='042')
+	yok2=geddata[i+1];
+	else if(geddata[i]==='0421')
+	yok2c1=geddata[i+1];
+	else if(geddata[i]==='0422')
+	yok2c2=geddata[i+1];
+	else if(geddata[i]==='0423')
+	yok2c3=geddata[i+1];
+	
+
+
+	
+	else if(geddata[i]==='043')
+	yok3=geddata[i+1];
+	else if(geddata[i]==='0431')
+	yok3c1=geddata[i+1];
+	else if(geddata[i]==='0432')
+	yok3c2=geddata[i+1];
+	else if(geddata[i]==='0433')
+	yok3c3=geddata[i+1];
+
+	// uncle na
+
+	else if(geddata[i]==='05')
+	na=geddata[i+1];
+	
+	else if(geddata[i]==='051')
+	nak1=geddata[i+1];
+	else if(geddata[i]==='0511')
+	nak1c1=geddata[i+1];
+	else if(geddata[i]==='0512')
+	nak1c2=geddata[i+1];
+	else if(geddata[i]==='0513')
+	nak1c3=geddata[i+1];
+
+
+	else if(geddata[i]==='052')
+	nak2=geddata[i+1];
+	else if(geddata[i]==='0521')
+	nak2c1=geddata[i+1];
+	else if(geddata[i]==='0522')
+	nak2c2=geddata[i+1];
+	else if(geddata[i]==='0523')
+	nak2c3=geddata[i+1];
+	
+
+
+	
+	else if(geddata[i]==='053')
+	nak3=geddata[i+1];
+	else if(geddata[i]==='0531')
+	nak3c1=geddata[i+1];
+	else if(geddata[i]==='0532')
+	nak3c2=geddata[i+1];
+	else if(geddata[i]==='0533')
+	nak3c3=geddata[i+1];
+
+
+
+
+		else if(geddata[i]=== '0d')
+		grandfatherd=geddata[i+1];
+		else if(geddata[i]=== '00d')
+		grandmotherd=geddata[i+1];
+		else if(geddata[i]==='01d')
+		fatherd=geddata[i+1];
+
+
+		else if(geddata[i]==='001d')
+		motherd=geddata[i+1];
+		else if(geddata[i]==='002d')
+		aunt1d=geddata[i+1];
+		else if(geddata[i]==='003d')
+		aunt2d=geddata[i+1];
+		else if(geddata[i]==='004d')
+		aunt3d=geddata[i+1];
+		else if(geddata[i]==='005d')
+		aunt4d=geddata[i+1];
+		
+
+
+		else if(geddata[i]==='011d')
+		med=geddata[i+1];
+		else if(geddata[i]==='0111d')
+		me1d=geddata[i+1];
+		else if(geddata[i]==='0112d')
+		me2d=geddata[i+1];
+		else if(geddata[i]==='0113d')
+		me3d=geddata[i+1];
+
+
+	else if(geddata[i]==='012d')
+		b1d=geddata[i+1];
+		else if(geddata[i]==='0121d')
+		b1k1d=geddata[i+1];
+		else if(geddata[i]==='0122d')
+		b1k2d=geddata[i+1];
+		else if(geddata[i]==='0123d')
+		b1k3d=geddata[i+1];
+
+		
+	else if(geddata[i]==='013d')
+	b2d=geddata[i+1];
+	else if(geddata[i]==='0131d')
+	b2k1d=geddata[i+1];
+	else if(geddata[i]==='0132d')
+	b2k2d=geddata[i+1];
+	else if(geddata[i]==='0133d')
+	b2k3d=geddata[i+1];
+
+
+
+			else if(geddata[i]==='01d')
+		fatherd=geddata[i+1];
+		
+		else if(geddata[i]==='011d')
+		med=geddata[i+1];
+		else if(geddata[i]==='0111d')
+		me1d=geddata[i+1];
+		else if(geddata[i]==='0112d')
+		me2d=geddata[i+1];
+		else if(geddata[i]==='0113d')
+		me3d=geddata[i+1];
+
+
+	else if(geddata[i]==='012d')
+		b1d=geddata[i+1];
+		else if(geddata[i]==='0121d')
+		b1k1d=geddata[i+1];
+		else if(geddata[i]==='0122d')
+		b1k2d=geddata[i+1];
+		else if(geddata[i]==='0123d')
+		b1k3d=geddata[i+1];
+
+		
+	else if(geddata[i]==='013d')
+	b2d=geddata[i+1];
+	else if(geddata[i]==='0131d')
+	b2k1d=geddata[i+1];
+	else if(geddata[i]==='0132d')
+	b2k2d=geddata[i+1];
+	else if(geddata[i]==='0133d')
+	b2k3d=geddata[i+1];
+
+
+
+//uncle 1 
+
+
+
+
+	else if(geddata[i]==='02d')
+	lald=geddata[i+1];
+	
+	else if(geddata[i]==='021d')
+	lalk1d=geddata[i+1];
+	else if(geddata[i]==='0211d')
+	lalk1c1d=geddata[i+1];
+	else if(geddata[i]==='0212d')
+	lalk1c2d=geddata[i+1];
+	else if(geddata[i]==='0213d')
+	lalk1c3d=geddata[i+1];
+
+
+	else if(geddata[i]==='022d')
+	lalk2d=geddata[i+1];
+	else if(geddata[i]==='0221d')
+	lalk2c1d=geddata[i+1];
+	else if(geddata[i]==='0222d')
+	lalk2c2d=geddata[i+1];
+	else if(geddata[i]==='0223d')
+	lalk2c3d=geddata[i+1];
+
+
+	
+	else if(geddata[i]==='023d')
+	lalk3d=geddata[i+1];
+	else if(geddata[i]==='0231d')
+	lalk3c1d=geddata[i+1];
+	else if(geddata[i]==='0232d')
+	lalk3c2d=geddata[i+1];
+	else if(geddata[i]==='0233d')
+	lalk3c3d=geddata[i+1];
+
+
+	//uncle 2
+
+
+	else if(geddata[i]==='03d')
+	mirdadd=geddata[i+1];
+	
+	else if(geddata[i]==='031d')
+	mirk1d=geddata[i+1];
+	else if(geddata[i]==='0311d')
+	mirk1c1d=geddata[i+1];
+	else if(geddata[i]==='0312d')
+	mirk1c2d=geddata[i+1];
+	else if(geddata[i]==='0313d')
+	mirk1c3d=geddata[i+1];
+
+
+	else if(geddata[i]==='032d')
+	mirk2d=geddata[i+1];
+	else if(geddata[i]==='0321d')
+	mirk2c1d=geddata[i+1];
+	else if(geddata[i]==='0322d')
+	mirk2c2d=geddata[i+1];
+	else if(geddata[i]==='0323d')
+	mirk2c3d=geddata[i+1];
+	
+
+
+	
+	else if(geddata[i]==='033d')
+	mirk3d=geddata[i+1];
+	else if(geddata[i]==='0331d')
+	mirk3c1d=geddata[i+1];
+	else if(geddata[i]==='0332d')
+	mirk3c2d=geddata[i+1];
+	else if(geddata[i]==='0333d')
+	mirk3c3d=geddata[i+1];
+
+
+	// uncle yo
+
+
+	else if(geddata[i]==='04d')
+	yod=geddata[i+1];
+	
+	else if(geddata[i]==='041d')
+	yok1d=geddata[i+1];
+	else if(geddata[i]==='0411d')
+	yok1c1d=geddata[i+1];
+	else if(geddata[i]==='0412d')
+	yok1c2d=geddata[i+1];
+	else if(geddata[i]==='0413d')
+	yok1c3d=geddata[i+1];
+
+
+	else if(geddata[i]==='042d')
+	yok2d=geddata[i+1];
+	else if(geddata[i]==='0421d')
+	yok2c1d=geddata[i+1];
+	else if(geddata[i]==='0422d')
+	yok2c2d=geddata[i+1];
+	else if(geddata[i]==='0423d')
+	yok2c3d=geddata[i+1];
+	
+
+
+	
+	else if(geddata[i]==='043d')
+	yok3d=geddata[i+1];
+	else if(geddata[i]==='0431d')
+	yok3c1d=geddata[i+1];
+	else if(geddata[i]==='0432d')
+	yok3c2d=geddata[i+1];
+	else if(geddata[i]==='0433d')
+	yok3c3d=geddata[i+1];
+
+	// uncle na
+
+	else if(geddata[i]==='05d')
+	nad=geddata[i+1];
+	
+	else if(geddata[i]==='051d')
+	nak1d=geddata[i+1];
+	else if(geddata[i]==='0511d')
+	nak1c1d=geddata[i+1];
+	else if(geddata[i]==='0512d')
+	nak1c2d=geddata[i+1];
+	else if(geddata[i]==='0513d')
+	nak1c3d=geddata[i+1];
+
+
+	else if(geddata[i]==='052d')
+	nak2d=geddata[i+1];
+	else if(geddata[i]==='0521d')
+	nak2c1d=geddata[i+1];
+	else if(geddata[i]==='0522d')
+	nak2c2d=geddata[i+1];
+	else if(geddata[i]==='0523d')
+	nak2c3d=geddata[i+1];
+	
+
+
+	
+	else if(geddata[i]==='053d')
+	nak3d=geddata[i+1];
+	else if(geddata[i]==='0531d')
+	nak3c1d=geddata[i+1];
+	else if(geddata[i]==='0532d')
+	nak3c2d=geddata[i+1];
+	else if(geddata[i]==='0533d')
+	nak3c3d=geddata[i+1];
+
+	
+	
+
+
+	else if(geddata[i]==='002s')
+	aunt1s=geddata[i+1];
+	else if(geddata[i]==='003s')
+	aunt2s=geddata[i+1];
+	else if(geddata[i]==='004s')
+	aunt3s=geddata[i+1];
+	else if(geddata[i]==='005s')
+	aunt4s=geddata[i+1];
+	
+
+
+	else if(geddata[i]==='011s')
+	mes=geddata[i+1];
+	else if(geddata[i]==='0111s')
+	me1s=geddata[i+1];
+	else if(geddata[i]==='0112s')
+	me2s=geddata[i+1];
+	else if(geddata[i]==='0113s')
+	me3s=geddata[i+1];
+
+
+else if(geddata[i]==='012s')
+	b1s=geddata[i+1];
+	else if(geddata[i]==='0121s')
+	b1k1s=geddata[i+1];
+	else if(geddata[i]==='0122s')
+	b1k2s=geddata[i+1];
+	else if(geddata[i]==='0123s')
+	b1k3s=geddata[i+1];
+
+	
+else if(geddata[i]==='013s')
+b2s=geddata[i+1];
+else if(geddata[i]==='0131s')
+b2k1s=geddata[i+1];
+else if(geddata[i]==='0132s')
+b2k2s=geddata[i+1];
+else if(geddata[i]==='0133s')
+b2k3s=geddata[i+1];
+
+
+
+		
+	
+	else if(geddata[i]==='011s')
+	mes=geddata[i+1];
+	else if(geddata[i]==='0111s')
+	me1s=geddata[i+1];
+	else if(geddata[i]==='0112s')
+	me2s=geddata[i+1];
+	else if(geddata[i]==='0113s')
+	me3s=geddata[i+1];
+
+
+else if(geddata[i]==='012s')
+	b1s=geddata[i+1];
+	else if(geddata[i]==='0121s')
+	b1k1s=geddata[i+1];
+	else if(geddata[i]==='0122s')
+	b1k2s=geddata[i+1];
+	else if(geddata[i]==='0123s')
+	b1k3s=geddata[i+1];
+
+	
+else if(geddata[i]==='013s')
+b2s=geddata[i+1];
+else if(geddata[i]==='0131s')
+b2k1s=geddata[i+1];
+else if(geddata[i]==='0132s')
+b2k2s=geddata[i+1];
+else if(geddata[i]==='0133s')
+b2k3s=geddata[i+1];
+
+
+
+//uncle 1 
+
+
+
+
+else if(geddata[i]==='02s')
+lals=geddata[i+1];
+
+else if(geddata[i]==='021s')
+lalk1s=geddata[i+1];
+else if(geddata[i]==='0211s')
+lalk1c1s=geddata[i+1];
+else if(geddata[i]==='0212s')
+lalk1c2s=geddata[i+1];
+else if(geddata[i]==='0213s')
+lalk1c3s=geddata[i+1];
+
+
+else if(geddata[i]==='022s')
+lalk2s=geddata[i+1];
+else if(geddata[i]==='0221s')
+lalk2c1s=geddata[i+1];
+else if(geddata[i]==='0222s')
+lalk2c2s=geddata[i+1];
+else if(geddata[i]==='0223s')
+lalk2c3s=geddata[i+1];
+
+
+
+else if(geddata[i]==='023s')
+lalk3s=geddata[i+1];
+else if(geddata[i]==='0231s')
+lalk3c1s=geddata[i+1];
+else if(geddata[i]==='0232s')
+lalk3c2s=geddata[i+1];
+else if(geddata[i]==='0233s')
+lalk3c3s=geddata[i+1];
+
+
+//uncle 2
+
+
+else if(geddata[i]==='03s')
+mirdads=geddata[i+1];
+
+else if(geddata[i]==='031s')
+mirk1s=geddata[i+1];
+else if(geddata[i]==='0311s')
+mirk1c1s=geddata[i+1];
+else if(geddata[i]==='0312s')
+mirk1c2s=geddata[i+1];
+else if(geddata[i]==='0313s')
+mirk1c3s=geddata[i+1];
+
+
+else if(geddata[i]==='032s')
+mirk2s=geddata[i+1];
+else if(geddata[i]==='0321s')
+mirk2c1s=geddata[i+1];
+else if(geddata[i]==='0322s')
+mirk2c2s=geddata[i+1];
+else if(geddata[i]==='0323s')
+mirk2c3s=geddata[i+1];
+
+
+
+
+else if(geddata[i]==='033s')
+mirk3s=geddata[i+1];
+else if(geddata[i]==='0331s')
+mirk3c1s=geddata[i+1];
+else if(geddata[i]==='0332s')
+mirk3c2s=geddata[i+1];
+else if(geddata[i]==='0333s')
+mirk3c3s=geddata[i+1];
+
+
+// uncle yo
+
+
+else if(geddata[i]==='04s')
+yos=geddata[i+1];
+
+else if(geddata[i]==='041s')
+yok1s=geddata[i+1];
+else if(geddata[i]==='0411s')
+yok1c1s=geddata[i+1];
+else if(geddata[i]==='0412s')
+yok1c2s=geddata[i+1];
+else if(geddata[i]==='0413s')
+yok1c3s=geddata[i+1];
+
+
+else if(geddata[i]==='042s')
+yok2s=geddata[i+1];
+else if(geddata[i]==='0421s')
+yok2c1s=geddata[i+1];
+else if(geddata[i]==='0422s')
+yok2c2s=geddata[i+1];
+else if(geddata[i]==='0423s')
+yok2c3s=geddata[i+1];
+
+
+
+
+else if(geddata[i]==='043s')
+yok3s=geddata[i+1];
+else if(geddata[i]==='0431s')
+yok3c1s=geddata[i+1];
+else if(geddata[i]==='0432s')
+yok3c2s=geddata[i+1];
+else if(geddata[i]==='0433s')
+yok3c3s=geddata[i+1];
+
+// uncle na
+
+else if(geddata[i]==='05s')
+nas=geddata[i+1];
+
+else if(geddata[i]==='051s')
+nak1s=geddata[i+1];
+else if(geddata[i]==='0511s')
+nak1c1s=geddata[i+1];
+else if(geddata[i]==='0512s')
+nak1c2s=geddata[i+1];
+else if(geddata[i]==='0513s')
+nak1c3s=geddata[i+1];
+
+
+else if(geddata[i]==='052s')
+nak2s=geddata[i+1];
+else if(geddata[i]==='0521s')
+nak2c1s=geddata[i+1];
+else if(geddata[i]==='0522s')
+nak2c2s=geddata[i+1];
+else if(geddata[i]==='0523s')
+nak2c3s=geddata[i+1];
+
+
+
+
+else if(geddata[i]==='053s')
+nak3s=geddata[i+1];
+else if(geddata[i]==='0531s')
+nak3c1s=geddata[i+1];
+else if(geddata[i]==='0532s')
+nak3c2s=geddata[i+1];
+else if(geddata[i]==='0533s')
+nak3c3s=geddata[i+1];
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+	  
+	}
+	
+	app.get('/getjson',(req,res)=>{
+
+		res.status(200).json({
+			"filename": filenamef,
+			"grandfather": grandfather,
+			"grandmother": grandmother,
+			
+			"father": father,
+			"me": me,
+			"me1": me1,
+			"me2": me2,
+			"me3": me3,
+			"b1": b1,
+			"b1k1": b1k1,
+			"b1k2": b1k2,
+			"b1k3": b1k3,
+			"b2": b2,
+			"b2k1": b2k1,
+			"b2k2": b2k2,
+			"b2k3": b2k3,
+			"b3": b3,
+			"b3k1": b3k1,
+			"b3k2": b3k2,
+			"b3k3": b3k3,
+			"lal": lal,
+			"lalk1": lalk1,
+			"lalk1c1": lalk1c1,
+			"lalk1c2": lalk1c2,
+			"lalk1c3": lalk1c3,
+			"lalk2": lalk2,
+			"lalk2c1": lalk2c1,
+			"lalk2c2": lalk2c2,
+			"lalk2c3": lalk2c3,
+			"lalk3": lalk3,
+			"lalk3c1": lalk3c1,
+			"lalk3c2": lalk3c2,
+			"lalk3c3": lalk3c3,
+			"mirdad": mirdad,
+			"mirk1": mirk1,
+			"mirk1c1": mirk1c1,
+			"mirk1c2": mirk1c2,
+			"mirk1c3": mirk1c3,
+			"mirk2": mirk2,
+			"mirk2c1": mirk2c1,
+			"mirk2c2": mirk2c2,
+			"mirk2c3": mirk2c3,
+			"mirk3": mirk3,
+			"mirk3c1": mirk3c1,
+			"mirk3c2": mirk3c2,
+			"mirk3c3": mirk3c3,
+			"yo": yo,
+			"yok1": yok1,
+			"yok1c1": yok1c1,
+			"yok1c2": yok1c2,
+			"yok1c3": yok1c3,
+			"yok2": yok2,
+			"yok2c1": yok2c1,
+			"yok2c2": yok2c2,
+			"yok2c3": yok2c3,
+			"yok3": yok3,
+			"yok3c1": yok3c1,
+			"yok3c2": yok3c2,
+			"yok3c3": yok3c3,
+			"na": na,
+			"nak1": nak1,
+			"nak1c1": nak1c1,
+			"nak1c2": nak1c2,
+			"nak1c3": nak1c3,
+			"nak2": nak2,
+			"nak2c1": nak2c1,
+			"nak2c2": nak2c2,
+			"nak2c3": nak2c3,
+			"nak3": nak3,
+			"nak3c1": nak3c1,
+			"nak3c2": nak3c2,
+			"nak3c3": nak3c3,
+
+			"aunt1": aunt1,
+			"mother": mother,
+			"aunt2": aunt2,
+			"aunt3": aunt3,
+			"aunt4": aunt4,
+
+
+
+			"grandfatherd": grandfatherd,
+			"grandmotherd": grandmotherd,
+			
+			"fatherd": fatherd,
+			"med": med,
+			"me1d": me1d,
+			"me2d": me2d,
+			"me3d": me3d,
+			"b1d": b1d,
+			"b1k1d": b1k1d,
+			"b1k2d": b1k2d,
+			"b1k3d": b1k3d,
+			"b2d": b2d,
+			"b2k1d": b2k1d,
+			"b2k2d": b2k2d,
+			"b2k3d": b2k3d,
+			"b3d": b3d,
+			"b3k1d": b3k1d,
+			"b3k2d": b3k2d,
+			"b3k3d": b3k3d,
+			"lald": lald,
+			"lalk1d": lalk1d,
+			"lalk1c1d": lalk1c1d,
+			"lalk1c2d": lalk1c2d,
+			"lalk1c3d": lalk1c3d,
+			"lalk2d": lalk2d,
+			"lalk2c1d": lalk2c1d,
+			"lalk2c2d": lalk2c2d,
+			"lalk2c3d": lalk2c3d,
+			"lalk3d": lalk3d,
+			"lalk3c1d": lalk3c1d,
+			"lalk3c2d": lalk3c2d,
+			"lalk3c3d": lalk3c3d,
+			"mirdadd": mirdadd,
+			"mirk1d": mirk1d,
+			"mirk1c1d": mirk1c1d,
+			"mirk1c2d": mirk1c2d,
+			"mirk1c3d": mirk1c3d,
+			"mirk2d": mirk2d,
+			"mirk2c1d": mirk2c1d,
+			"mirk2c2d": mirk2c2d,
+			"mirk2c3d": mirk2c3d,
+			"mirk3d": mirk3d,
+			"mirk3c1d": mirk3c1d,
+			"mirk3c2d": mirk3c2d,
+			"mirk3c3d": mirk3c3d,
+			"yod": yod,
+			"yok1d": yok1d,
+			"yok1c1d": yok1c1d,
+			"yok1c2d": yok1c2d,
+			"yok1c3d": yok1c3d,
+			"yok2d": yok2d,
+			"yok2c1d": yok2c1d,
+			"yok2c2d": yok2c2d,
+			"yok2c3d": yok2c3d,
+			"yok3d": yok3d,
+			"yok3c1d": yok3c1d,
+			"yok3c2d": yok3c2d,
+			"yok3c3d": yok3c3d,
+			"nad": nad,
+			"nak1d": nak1d,
+			"nak1c1d": nak1c1d,
+			"nak1c2d": nak1c2d,
+			"nak1c3d": nak1c3d,
+			"nak2d": nak2d,
+			"nak2c1d": nak2c1d,
+			"nak2c2d": nak2c2d,
+			"nak2c3d": nak2c3d,
+			"nak3d": nak3d,
+			"nak3c1d": nak3c1d,
+			"nak3c2d": nak3c2d,
+			"nak3c3d": nak3c3d,
+
+			"aunt1d": aunt1d,
+			"motherd": motherd,
+			"aunt2d": aunt2d,
+			"aunt3d": aunt3d,
+			"aunt4d": aunt4d,
+
+
+
+
+		
+			
+			
+			"mes": mes,
+			"me1s": me1s,
+			"me2s": me2s,
+			"me3s": me3s,
+			"b1s": b1s,
+			"b1k1s": b1k1s,
+			"b1k2s": b1k2s,
+			"b1k3s": b1k3s,
+			"b2s": b2s,
+			"b2k1s": b2k1s,
+			"b2k2s": b2k2s,
+			"b2k3s": b2k3s,
+			"b3s": b3s,
+			"b3k1s": b3k1s,
+			"b3k2s": b3k2s,
+			"b3k3s": b3k3s,
+			"lals": lals,
+			"lalk1s": lalk1s,
+			"lalk1c1s": lalk1c1s,
+			"lalk1c2s": lalk1c2s,
+			"lalk1c3s": lalk1c3s,
+			"lalk2s": lalk2s,
+			"lalk2c1s": lalk2c1s,
+			"lalk2c2s": lalk2c2s,
+			"lalk2c3s": lalk2c3s,
+			"lalk3s": lalk3s,
+			"lalk3c1s": lalk3c1s,
+			"lalk3c2s": lalk3c2s,
+			"lalk3c3s": lalk3c3s,
+			"mirdads": mirdads,
+			"mirk1s": mirk1s,
+			"mirk1c1s": mirk1c1s,
+			"mirk1c2s": mirk1c2s,
+			"mirk1c3s": mirk1c3s,
+			"mirk2s": mirk2s,
+			"mirk2c1s": mirk2c1s,
+			"mirk2c2s": mirk2c2s,
+			"mirk2c3s": mirk2c3s,
+			"mirk3s": mirk3s,
+			"mirk3c1s": mirk3c1s,
+			"mirk3c2s": mirk3c2s,
+			"mirk3c3s": mirk3c3s,
+			"yos": yos,
+			"yok1s": yok1s,
+			"yok1c1s": yok1c1s,
+			"yok1c2s": yok1c2s,
+			"yok1c3s": yok1c3s,
+			"yok2s": yok2s,
+			"yok2c1s": yok2c1s,
+			"yok2c2s": yok2c2s,
+			"yok2c3s": yok2c3s,
+			"yok3s": yok3s,
+			"yok3c1s": yok3c1s,
+			"yok3c2s": yok3c2s,
+			"yok3c3s": yok3c3s,
+			"nas": nas,
+			"nak1s": nak1s,
+			"nak1c1s": nak1c1s,
+			"nak1c2s": nak1c2s,
+			"nak1c3s": nak1c3s,
+			"nak2s": nak2s,
+			"nak2c1s": nak2c1s,
+			"nak2c2s": nak2c2s,
+			"nak2c3s": nak2c3s,
+			"nak3s": nak3s,
+			"nak3c1s": nak3c1s,
+			"nak3c2s": nak3c2s,
+			"nak3c3s": nak3c3s,
+
+			"aunt1s": aunt1s,
+			"mothers": mothers,
+			"aunt2s": aunt2s,
+			"aunt3s": aunt3s,
+			"aunt4s": aunt4d
+			
+
+		  })
+			})
+		});
+		
+	found=0;
+	
+	
+}
+
+function delay(time) {
+	return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+
+app.listen(port, () => console.info(`App listening on port ${port}`));
+
+

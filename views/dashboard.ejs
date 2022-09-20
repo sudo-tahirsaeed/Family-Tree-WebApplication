@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     
+<title>Dashboard</title>
+<link href="img/family-tree.png" rel="icon">
+<link href="img/edit.png">
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script src="js/FamilyTree.js"></script>
+
+    <style>
+
+        body, html {
+  height: 100%;
+  background-color: rgb(241, 253, 255);
+}
+
+
+        .bby{
+           
+      
+            background-image: radial-gradient( circle 760px at 50.7% 60.5%,  rgba(76,120,183,1) 0%, rgba(34,70,122,1) 90% ); 
+         }
+         .idt
+         {
+          display: none;
+
+         }
+.btne{
+  
+width: 80px;
+color: rgb(0, 0, 0);
+background-color: rgb(0, 241, 108);
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+font-weight: bold;
+border-radius: 20%;
+  }
+  .btnd{
+  
+  width: 80px;
+  color: rgb(0, 0, 0);
+  background-color: rgb(241, 88, 0);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  border-radius: 20%;
+    }
+   
+ #act{
+ font-weight: bold;
+  color: white;
+ }
+ #na{
+  color: aquamarine;
+
+ }
+ #mid{
+  flex-wrap: wrap;
+
+  height: 100%;
+  background-color: rgb(241, 253, 255);
+ }
+ #it1{
+flex: 35%;
+text-align: center;
+ }
+  #it2{
+
+    flex: 65%;
+    text-align: center;
+
+    overflow:scroll;
+    
+
+
+ }
+ #tbl
+ {
+  overflow:scroll;
+  height: 450px;
+ }
+ #it3{
+margin-left: 15%;
+width: 70%;
+background-color: rgb(241, 253, 255);
+
+
+ }
+       </style>
+
+
+    <body class="main">
+    
+
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a id='na' class="navbar-brand" >Family Tree</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a id='act' class="nav-link" href="#">Dashboard <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active">
+              <a id='lo' class="nav-link" href="/">Sign Out <span class="sr-only"></span></a>
+            </li>
+            <form action="/find" method="Post">
+            <li class="nav-item active">
+              <button id="fba" type="submit"><a id='search' class="nav-link" >Search Tree <span class="sr-only"></span></a></button>
+            </li>
+
+          </form>
+          <style>
+            #fba
+            {
+              background-color: aquamarine;
+              border-radius: 17%;
+              color: black;
+              
+            }
+            #fba:hover
+            {
+              background-color: rgb(203, 240, 70);
+              border-radius: 17%;
+              color: black;
+              
+            }
+            #search
+            {
+              color: black;
+
+              
+            }
+          </style>
+<style>
+  #lo
+  {
+    background-color: rgb(217, 255, 128);
+    color: rgb(0, 0, 0);
+    border-radius: 20%;
+  }
+  #lo:hover{
+    background-color: rgb(161, 46, 46);
+    color: white;
+    border-radius: 15%;
+    font-weight: bold;
+  }
+</style>
+            
+          </ul>
+      </nav>
+
+
+
+      <div id="mid" class="d-flex flex-row">
+        
+        <div id="it1" class="p-2">
+          <form  action="/submit"   method="POST" enctype="multipart/form-data">
+          <!-- //mrmiss -->
+
+      
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Title</span>
+            </div>
+            <select name="title">
+              <option value="Mr."> Mr.</option>
+              <option value="Mrs."> Mrs.</option>
+              <option value="Miss"> Miss</option>
+              <option value="Ms."> Ms.</option>
+             
+              </select>
+          </div>
+            <!-- //name -->
+      
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+            </div>
+            <input id="name" name="name" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+                    <!-- //id-->
+                    <div class="input-group input-group-sm mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">ID</span>
+                      </div>
+                      <input  id="ix" name="id" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    </div>
+                            <!-- //Parents id-->
+                            <div class="input-group input-group-sm mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Parents ID</span>
+                              </div>
+                              <input id="pid" name="pid" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+
+                                <!-- //Spouse id-->
+
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">Spouse ID</span>
+                                  </div>
+                                  <input id="sid" name="sid" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                                </div>
+
+                                    
+                                    <!-- //BD-->
+                                    <div class="input-group input-group-sm mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Birthday</span>
+                                      </div>
+                                      <input type="date" id="birthday" name="birthday"> 
+                                    </div>
+                                    <!-- //DD-->
+                                    <div class="input-group input-group-sm mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Date of Death</span>
+                                      </div>
+                                      <input type="date" id="death" name="death"> 
+                                    </div>
+                                    
+                                    <!-- //Description-->
+                                    <div class="input-group input-group-sm mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+                                      </div>
+                                      <input id="descx" name="descx" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                                    </div>
+
+
+                                     <!-- //events-->
+                                     <div class="input-group input-group-sm mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Events</span>
+                                      </div>
+                                      <input id="events" name="events" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                                    </div>
+                                    
+                                      <!-- //Picture-->
+
+                                     
+                                      <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text" id="inputGroup-sizing-sm">Upload Picture</span>
+                                        </div>
+                                        <br>
+
+                                        <input name="pic" style="padding-top: 10px;" type="file" id="myFile" >  
+                                      </div>
+                                      <input id='emailf' name="emailf" style="display:none; padding-top: 10px;" type="text"  >  
+                                      <input id='ez' name="editx" style="display:none; padding-top: 10px;" type="text"  >  
+                                    
+                                      <div>
+                                        <button onclick="reload()"  type="submit" class="btn btn-dark">Submit</button>
+                                        
+                                      </div>
+
+         </form>                              
+         </div>
+
+<script>
+
+</script>
+
+
+
+
+        <div style="overflow-x:auto;" id="it2" class="p-2">
+          <div id="tbl">
+          <table id="list" class="table table-dark">
+        
+            <thead>
+              <tr>
+                <th id="id" scope="col">ID</th>
+                <th id="name" scope="col">Name</th>
+                <th id="pid" scope="col">Parent ID</th>
+                <th id="sid" scope="col">Spouse ID</th>
+                <th  id="desc" scope="col">Desc & Events</th>
+                <th  id="desc" scope="col">Edit</th>
+                <th  id="desc" scope="col">Delete</th>
+               
+                
+                
+              </tr>
+            </thead>
+            
+            <tbody>
+          
+            </tbody>
+            
+          </table>
+        
+        </div>
+        </div>
+ 
+        <div id="it3" class="p-2">
+          <style>
+            #pt
+            {
+           margin-left: 35%;
+           border-radius: 22%;
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+           font-size: 18px;
+           background-color: rgb(255, 140, 0);
+           font-weight: bold;
+           text-align: center;
+           width: 80px;
+            }
+          </style>
+<p id="pt">TREE</p>
+
+
+          <div style="width:100%; height:700px;" id="tree">
+            
+      
+          
+          </div>
+
+
+        </div>
+        
+        
+      </div>
+
+
+    </body>
+    <script src="js/dashboard.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<script>
+  function delay(time) {
+return new Promise(resolve => setTimeout(resolve, time));
+}
+ 
+function validate()
+{
+  delay(2000).then(() => {	
+  const url="http://localhost:5000/updatefilecheck";
+
+  //e.preventDefault()
+  getInfo();
+  async function getInfo() {
+    
+      const res= await fetch (url,
+      {   
+              method: 'GET'
+      }
+      )
+      
+      console.log(res);
+      const data=await res.json();
+     
+      alert(data.Message);
+    
+  }
+});
+}
+  const url="http://localhost:5000/newfamily1";
+  
+  //e.preventDefault()
+  getInfo();
+  async function getInfo() {
+    
+      const res= await fetch (url,
+      {   
+              method: 'GET'
+      }
+      )
+      
+      console.log(res);
+      const data=await res.json();
+     // getbtn.value=data.info;
+      console.log(data.info);
+     
+      console.log(data.name);
+
+      var header = document.getElementById('title');
+header.childNodes[0].textContent = "  "+ data.name.toUpperCase()+" ("+data.id.toUpperCase()+") ";
+
+
+   
+  }
+
+</script> -->

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="img/family-tree.png" rel="icon">
+<title>Search</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script src="js/FamilyTree.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script src="js/FamilyTree.js"></script>
+
+
+</head>
+
+<body>
+    
+<style>
+    #f
+    {
+        display: flex;
+        flex-wrap: wrap;
+      
+    }
+    #for
+    {
+        margin-top: 2%;
+        margin-left: 30%;
+        margin-right: 40%;
+    }
+    #ss
+    {
+        background-color: rgb(250, 144, 4);
+        text-align: center;
+    }
+    
+</style>
+<style>
+    .html
+    {
+        background-color: rgb(228, 137, 0);
+    }
+    #fba
+    {
+      background-color: aquamarine;
+      border-radius: 17%;
+      color: black;
+      
+    }
+    #fba:hover
+    {
+      background-color: rgb(203, 240, 70);
+      border-radius: 17%;
+      color: black;
+      
+    }
+    #search
+    {
+      color: black;
+
+      
+    }
+  </style>
+<style>
+#lo
+{
+background-color: rgb(217, 255, 128);
+color: rgb(0, 0, 0);
+border-radius: 20%;
+}
+
+ #na{
+  color: aquamarine;
+
+ }
+#lo:hover{
+background-color: rgb(151, 151, 151);
+color: white;
+border-radius: 15%;
+font-weight: bold;
+}
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a id='na' class="navbar-brand" >Family Tree</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+         <a href="/" id='act' class="nav-link" >Dashboard <span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item active">
+          <a id='lo' class="nav-link" href="/">Sign Out <span class="sr-only"></span></a>
+        </li>
+        <form action="/find" method="Post">
+        <li class="nav-item active">
+          <button id="fba" type="submit"><a id='search' class="nav-link" >Search Tree <span class="sr-only"></span></a></button>
+        </li>
+
+      </form>
+      </ul>
+      </nav>
+      <div id="bx">
+<div class="d-flex flex-column">
+    <div id="for">
+        <H2 id="ss">SEARCH</H2>
+    <form  action="/sx" method="post" >
+        <!-- //name -->
+
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+          </div>
+          <input id="emailsearch" name="emailsearch" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+        </div>
+                  <!-- //id-->
+                  <!-- <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">ID</span>
+                    </div>
+                    <input  id="ix" name="id" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                  </div> -->
+                  <div>
+                    <button  onclick="reload()"  type="submit" class="btn btn-dark">Search</button>
+                    
+                  </div>
+
+                 
+    </form>
+    
+    </div>
+    <style>
+        #xx
+        {
+            background-color: transparent;
+
+        }
+        #bg
+        {
+           margin-left: 7%;
+           margin-right: 7%;
+        }
+        #bx
+        {
+            background-color: rgb(223, 212, 198);
+        }
+    </style>
+    <div id="bg">
+    <div style="width:100%; height:700px;" id="tree">
+            
+      
+          
+    </div>
+</div>
+</div>
+</div> 
+</body>
+<script src="js/find.js"></script>

@@ -1,0 +1,26 @@
+{
+  "name": "tahirsaeed",
+  "version": "1.0.0",
+  "description": "familytree",
+  "main": "index.js",
+  "scripts": {
+
+ "test": "echo \"Error: no test specified\" && exit 1" 
+
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "bootstrap": "^5.2.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "mongodb": "^4.8.1",
+    "multer": "^1.4.5-lts.1",
+    "n-readlines": "^1.0.1",
+    "popup": "^0.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
